@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+<style>
+html, body, #map {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  font-family: sans;
+}
+select {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 100000;
+}
+#loading {
+  position: fixed;
+  top: calc(50% - 25px);
+  left: calc(50% - 100px);
+  z-index: 100000;
+  height: 50px;
+  width: 200px;
+}
+.hidden {
+  display: none;
+}
+</style>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<title>Dockless heatmaps | BikeHero Labs</title>
+
+<select>
+  <option>spin</option>
+  <option>mobike</option>
+  <option>limebike</option>
+  <option>JUMP</option>
+</select>
+<div id="loading"><h1>Loading...</h1></div>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+<script src="https://cdn.rawgit.com/Leaflet/Leaflet.heat/gh-pages/dist/leaflet-heat.js"></script>
+<script>
+var map = L.map('map');
+var layer;
+
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+map.setView([38.91, -77.01], 13);
+
+const rootUrl = 'https://wahzhpvf98.execute-api.us-east-1.amazonaws.com/dev/bikes_from_db/';
+
+function updateHeatmap() {
+  const provider = document.querySelector('select').value;
+  document.title = `${provider} heatmap | BikeHero Labs`;
+
+  if (layer) {
+    map.removeLayer(layer);
+    layer = undefined;
+    document.getElementById('loading').classList.toggle('hidden', false);
+  }
+  fetch(rootUrl + provider, {cors: true})
+  .then((resp) => resp.json())
+  .then((json) => {
+    layer = L.heatLayer(json, {radius: 10});
+    layer.addTo(map);
+    document.getElementById('loading').classList.toggle('hidden', true);
+  })
+  //.catch(() => alert('Error loading or parsing GeoJSON'))
+}
+updateHeatmap();
+document.querySelector('select').onchange = updateHeatmap;
+</script>
