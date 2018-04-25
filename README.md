@@ -2,8 +2,8 @@ BikeHero Labs is a place for building even smaller bike & bikeshare expirements 
 and share.bikehero.io
 
 ### Lab projects include:
- * Heatmaps of dockless bikes: https://labs.bikehero.io/heatmap
- * A GBFS to GeoJSON Proxy: https://gbfs2geojson.glitch.me/
+ * [Heatmaps of dockless bikes](https://labs.bikehero.io/heatmap)
+ * [A GBFS to GeoJSON Proxy](https://gbfs2geojson.glitch.me/)
 
 
 ### About
