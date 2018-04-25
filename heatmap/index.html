@@ -50,7 +50,7 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 
 map.setView([38.91, -77.01], 13);
 
-const rootUrl = 'https://wahzhpvf98.execute-api.us-east-1.amazonaws.com/dev/bikes_from_db/';
+const rootUrl = 'https://s3.amazonaws.com/bikehero-labs/';
 
 function updateHeatmap() {
   const provider = document.querySelector('select').value;
@@ -61,14 +61,14 @@ function updateHeatmap() {
     layer = undefined;
     document.getElementById('loading').classList.toggle('hidden', false);
   }
-  fetch(rootUrl + provider, {cors: true})
+  fetch(`${rootUrl}${provider}.json`, {cors: true})
   .then((resp) => resp.json())
   .then((json) => {
     layer = L.heatLayer(json, {radius: 10});
     layer.addTo(map);
     document.getElementById('loading').classList.toggle('hidden', true);
   })
-  //.catch(() => alert('Error loading or parsing GeoJSON'))
+  .catch(() => alert('Error loading or parsing GeoJSON'))
 }
 updateHeatmap();
 document.querySelector('select').onchange = updateHeatmap;
