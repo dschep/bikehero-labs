@@ -1,5 +1,3 @@
-# 🚲⚗️ BikeHero Labs
-
 BikeHero Labs is a place for building even smaller bike & bikeshare expirements than bikehero.io
 and share.bikehero.io
 
