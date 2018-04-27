@@ -1,0 +1,100 @@
+service:
+  name: dobi-archiver
+  awsKmsKeyArn: arn:aws:kms:us-east-1:704903784842:key/49b8e145-0e10-4e99-a899-c4cdfe07880c
+
+provider:
+  name: aws
+  runtime: python3.6
+  variableSyntax: "\\${((?!AWS)[ ~:a-zA-Z0-9._'\",\\-\\/\\(\\)]+?)}"
+  environment:
+    STAGE: ${self:custom.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action: ssm:GetParameter
+      Resource:
+        Fn::Sub: arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:custom.service.name}/${self:custom.stage}/*
+    - Effect: Allow
+      Action:  kms:Decrypt
+      Resource: ${self:custom.service.awsKmsKeyArn}
+    - Effect: Allow
+      Action:  s3:PutObject
+      Resource: arn:aws:s3:::bikehero-labs
+
+custom:
+  # work around for ${self:service} not working
+  service: ${file(serverless.yml):service}
+  # shortcut  to evaluation the various stage sources
+  stage: ${opt:stage, self:provider.stage}
+
+package:
+  include:
+    - bikefinder/**/*.py
+  exclude:
+    - '**/*'
+
+functions:
+  scrape_jump:
+    handler: bikefinder/scraper.scrape_jump
+    timeout: 300
+    events:
+      - schedule: 'rate(10 minutes)'
+    stages:
+      - dev
+
+  scrape_spin:
+    handler: bikefinder/scraper.scrape_spin
+    timeout: 300
+    events:
+      - schedule: 'rate(10 minutes)'
+    stages:
+      - dev
+
+  scrape_limebike:
+    handler: bikefinder/scraper.scrape_limebike
+    timeout: 300
+    events:
+      - schedule: 'rate(10 minutes)'
+    stages:
+      - dev
+
+  scrape_ofo:
+    handler: bikefinder/scraper.scrape_ofo
+    timeout: 300
+    events:
+      - schedule: 'rate(10 minutes)'
+    stages:
+      - dev
+
+  scrape_mobike:
+    handler: bikefinder/scraper.scrape_mobike_gbfs
+    timeout: 300
+    events:
+      - schedule: 'rate(10 minutes)'
+    stages:
+      - dev
+
+  bikes_from_db_to_s3:
+    handler: bikefinder/handlers.bikes_from_db_to_s3
+    timeout: 300
+    events:
+      - schedule: 'rate(1 day)'
+    stages:
+      - dev
+
+plugins:
+  - serverless-python-requirements
+
+resources:
+  Resources:
+    LabsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: bikehero-labs-dobi-heatmaps
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - "*"
+              AllowedMethods:
+                - GET
+              AllowedOrigins:
+                - "*"
