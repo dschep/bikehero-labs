@@ -1,0 +1,12 @@
+{
+  "name": "bikefinder",
+  "description": "",
+  "version": "0.1.0",
+  "scripts": {
+    "sls": "sls"
+  },
+  "devDependencies": {
+    "serverless": "*",
+    "serverless-python-requirements": "^4.0.4"
+  }
+}
