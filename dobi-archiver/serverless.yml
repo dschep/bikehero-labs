@@ -12,17 +12,15 @@ provider:
     - Effect: Allow
       Action: ssm:GetParameter
       Resource:
-        Fn::Sub: arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:custom.service.name}/${self:custom.stage}/*
+        Fn::Sub: arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/bikefinder/dev/*
     - Effect: Allow
       Action:  kms:Decrypt
-      Resource: ${self:custom.service.awsKmsKeyArn}
+      Resource: ${self:service.awsKmsKeyArn}
     - Effect: Allow
       Action:  s3:PutObject
-      Resource: arn:aws:s3:::bikehero-labs
+      Resource: arn:aws:s3:::bikehero-labs-dobi-heatmaps
 
 custom:
-  # work around for ${self:service} not working
-  service: ${file(serverless.yml):service}
   # shortcut  to evaluation the various stage sources
   stage: ${opt:stage, self:provider.stage}
 
