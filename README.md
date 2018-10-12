@@ -3,6 +3,8 @@ BikeHero Labs is a place for building even smaller bike & bikeshare expirements 
 
 ### Lab projects include:
  * [Archiving of Dockless bikeshare data](https://github.com/dschep/bikehero-labs/tree/gh-pages/dobi-archiver)
+   * Download a copy of the archive! Last updated 2018-10-11
+     https://data.bikehero.io/bike_locations.sql.gz
  * [Various Analysis of Dockless bikeshare data](https://labs.bikehero.io/dobi-analysis) (uses archived data)
  * [Heatmaps of dockless bikes](https://labs.bikehero.io/heatmap) (uses archived data)
    ![screenshot of JUMP heatmap](heatmap.png)
