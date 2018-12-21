@@ -23,6 +23,8 @@ provider:
 custom:
   # shortcut  to evaluation the various stage sources
   stage: ${opt:stage, self:provider.stage}
+  pythonRequirements:
+    dockerizePip: non-linux
 
 package:
   include:
@@ -41,6 +43,30 @@ functions:
 
   scrape_spin:
     handler: bikefinder/scraper.scrape_spin
+    timeout: 300
+    events:
+      - schedule: 'rate(10 minutes)'
+    stages:
+      - dev
+
+  scrape_bird:
+    handler: bikefinder/scraper.scrape_bird
+    timeout: 300
+    events:
+      - schedule: 'rate(10 minutes)'
+    stages:
+      - dev
+
+  scrape_lyft:
+    handler: bikefinder/scraper.scrape_lyft
+    timeout: 300
+    events:
+      - schedule: 'rate(10 minutes)'
+    stages:
+      - dev
+
+  scrape_skip:
+    handler: bikefinder/scraper.scrape_skip
     timeout: 300
     events:
       - schedule: 'rate(10 minutes)'
