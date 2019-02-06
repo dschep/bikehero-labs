@@ -52,8 +52,11 @@ def scrape_spin(event, context):
 @no_retry_on_failure
 @database
 def scrape_bird(event, context):
-    resp = requests.get('https://gbfs.bird.co/dc')
-    bikes = Bikes.from_gbfs_json(resp.json(), 'bird')
+    dc_resp = requests.get('https://gbfs.bird.co/dc')
+    arl_resp = requests.get('https://mds.bird.co/gbfs/arlingtonco/free_bikes')
+    bird_gbfs = dc_resp.json()
+    bird_gbfs['bikes'] += arl_resp.json()['bikes']
+    bikes = Bikes.from_gbfs_json(bird_gbfs, 'bird')
     save_to_db(bikes, context.db)
     return bikes.geojson
 
